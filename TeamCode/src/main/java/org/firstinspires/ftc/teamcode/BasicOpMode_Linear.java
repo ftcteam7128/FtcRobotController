@@ -110,14 +110,24 @@ public class BasicOpMode_Linear extends LinearOpMode {
 
             double flPower = scalar*(xPos + yPos + rot);
             double frPower = scalar*(xPos - yPos - rot);
-            double blPower = scalar*(xPos - yPos + rot);
-            double brPower = scalar*(xPos + yPos - rot);
+            double rlPower = scalar*(xPos - yPos + rot);
+            double rrPower = scalar*(xPos + yPos - rot);
 
             if(maxPower > 1) {
                 scalar/=maxPower;
             }else{
                 scalar=1;
             }
+
+            flPower = scalar*(xPos + yPos + rot);
+            frPower = scalar*(xPos - yPos - rot);
+            blPower = scalar*(xPos - yPos + rot);
+            brPower = scalar*(xPos + yPos - rot);
+
+            LeftFront.setPower(flPower);
+            LeftRear.setPower(frPower);
+            RightFront.setPower(rlPower);
+            RightRear.setPower(rrPower);
         }
     }
 }
