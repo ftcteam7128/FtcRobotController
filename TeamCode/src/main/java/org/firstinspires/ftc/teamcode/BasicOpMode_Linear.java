@@ -107,7 +107,17 @@ public class BasicOpMode_Linear extends LinearOpMode {
 
             double scalar = Math.hypot(yPos,xPos);
             double maxPower = 1;
-            
+
+            double flPower = scalar*(xPos + yPos + rot);
+            double frPower = scalar*(xPos - yPos - rot);
+            double blPower = scalar*(xPos - yPos + rot);
+            double brPower = scalar*(xPos + yPos - rot);
+
+            if(maxPower > 1) {
+                scalar/=maxPower;
+            }else{
+                scalar=1;
+            }
         }
     }
 }
