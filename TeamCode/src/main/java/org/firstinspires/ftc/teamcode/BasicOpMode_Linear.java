@@ -56,10 +56,10 @@ public class BasicOpMode_Linear extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor leftFrontDrive = null;
-    private DcMotor leftBackDrive = null;
-    private DcMotor rightFrontDrive = null;
-    private DcMotor rightBackDrive = null;
+    private DcMotor LeftFront = null;
+    private DcMotor LeftRear = null;
+    private DcMotor RightFront = null;
+    private DcMotor RightRear = null;
 
     @Override
     public void runOpMode() {
@@ -71,17 +71,28 @@ public class BasicOpMode_Linear extends LinearOpMode {
         // step (using the FTC Robot Controller app on the phone).
         // leftDrive  = hardwareMap.get(DcMotor.class, "left_drive");
         // rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
-        LeftFront = hardware.get(DcMotor.class, "Lf_motor")
-        LeftRear = hardware.get(DcMotor.class, "Lr_motor")
-        RightFront = hardware.get(DcMotor.class, "Rf_motor")
-        RightRear = hardware.get(DcMotor.class, "Rr_motor")
-
-        Leftfront
+        LeftFront = hardwareMap.get(DcMotor.class, "Lf_motor");
+        LeftRear = hardwareMap.get(DcMotor.class, "Lr_motor");
+        RightFront = hardwareMap.get(DcMotor.class, "Rf_motor");
+        RightRear = hardwareMap.get(DcMotor.class, "Rr_motor");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
         // leftDrive.setDirection(DcMotor.Direction.FORWARD);
         // rightDrive.setDirection(DcMotor.Direction.REVERSE);
+        LeftFront.setDirection(DcMotor.Direction.REVERSE);
+        RightRear.setDirection(DcMotor.Direction.REVERSE);
+
+        // Encoders
+        LeftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        LeftRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        RightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        RightRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        LeftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        LeftRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        RightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        RightRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
