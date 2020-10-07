@@ -113,10 +113,10 @@ public class BasicOpMode_Linear extends LinearOpMode {
             double rlPower = scalar*(xPos - yPos + rot);
             double rrPower = scalar*(xPos + yPos - rot);
 
-            if(maxPower > 1) {
-                scalar/=maxPower;
-            }else{
-                scalar=1;
+            if (maxPower > 1) {
+                scalar /= maxPower;
+            } else {
+                scalar = 1;
             }
 
             flPower = scalar*(xPos + yPos + rot);
