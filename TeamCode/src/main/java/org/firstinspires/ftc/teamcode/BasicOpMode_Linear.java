@@ -77,6 +77,34 @@ public class BasicOpMode_Linear extends LinearOpMode {
         RightFront = hardwareMap.get(DcMotor.class, "Rf_motor");
         RightRear = hardwareMap.get(DcMotor.class, "Rr_motor");
 
+        // Testing each motor individualy
+        LeftFront.setPower(0.5);
+        sleep(1000);
+        LeftFront.setPower(0);
+        sleep(1000);
+        RightFront.setPower(-0.5);
+        sleep(1000);
+        RightFront.setPower(0);
+        sleep(1000);
+        LeftRear.setPower(0.5);
+        sleep(1000);
+        LeftRear.setPower(0);
+        sleep(1000);
+        RightRear.setPower(-0.5);
+        sleep(1000);
+        RightRear.setPower(0);
+
+        // Moving for 5 seconds
+        LeftFront.setPower(0.5);
+        RightFront.setPower(-0.5);
+        LeftRear.setPower(-0.5);
+        RightRear.setPower(0.5);
+        sleep(5000);
+        LeftFront.setPower(0);
+        RightFront.setPower(0);
+        LeftRear.setPower(0);
+        RightRear.setPower(0);
+        /*
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
         // leftDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -129,5 +157,9 @@ public class BasicOpMode_Linear extends LinearOpMode {
             RightFront.setPower(rlPower);
             RightRear.setPower(rrPower);
         }
+
+         */
     }
+
+
 }
