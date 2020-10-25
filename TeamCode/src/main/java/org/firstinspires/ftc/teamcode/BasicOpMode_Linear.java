@@ -72,10 +72,10 @@ public class BasicOpMode_Linear extends LinearOpMode {
         // step (using the FTC Robot Controller app on the phone).
         // leftDrive  = hardwareMap.get(DcMotor.class, "left_drive");
         // rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
-        LeftFront = hardwareMap.get(DcMotor.class, "Lf_motor");
-        LeftRear = hardwareMap.get(DcMotor.class, "Lr_motor");
-        RightFront = hardwareMap.get(DcMotor.class, "Rf_motor");
-        RightRear = hardwareMap.get(DcMotor.class, "Rr_motor");
+        LeftFront = hardwareMap.get(DcMotor.class, "LeftFront");
+        LeftRear = hardwareMap.get(DcMotor.class, "LeftRear");
+        RightFront = hardwareMap.get(DcMotor.class, "RightFront");
+        RightRear = hardwareMap.get(DcMotor.class, "RightRear");
 
         // Testing each motor individualy
         LeftFront.setPower(0.5);
@@ -94,9 +94,9 @@ public class BasicOpMode_Linear extends LinearOpMode {
         sleep(1000);
         RightRear.setPower(0);
 
-        // Moving for 5 seconds
-        LeftFront.setPower(0.5);
-        RightFront.setPower(-0.5);
+        // Moving forward for 5 seconds
+        LeftFront.setPower(-0.5);
+        RightFront.setPower(0.5);
         LeftRear.setPower(-0.5);
         RightRear.setPower(0.5);
         sleep(5000);
@@ -104,6 +104,18 @@ public class BasicOpMode_Linear extends LinearOpMode {
         RightFront.setPower(0);
         LeftRear.setPower(0);
         RightRear.setPower(0);
+
+        // Moving backward for 5 seconds
+        LeftFront.setPower(0.5);
+        RightFront.setPower(-0.5);
+        LeftRear.setPower(0.5);
+        RightRear.setPower(-0.5);
+        sleep(5000);
+        LeftFront.setPower(0);
+        RightFront.setPower(0);
+        LeftRear.setPower(0);
+        RightRear.setPower(0);
+
         /*
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery

@@ -68,10 +68,10 @@ public class BasicOpMode_Iterative extends OpMode
     public void init() {
         telemetry.addData("Status", "Initialized");
 
-        LeftFront = hardwareMap.get(DcMotor.class, "Lf_motor");
-        LeftRear = hardwareMap.get(DcMotor.class, "Lr_motor");
-        RightFront = hardwareMap.get(DcMotor.class, "Rf_motor");
-        RightRear = hardwareMap.get(DcMotor.class, "Rr_motor");
+        LeftFront = hardwareMap.get(DcMotor.class, "LeftFront");
+        LeftRear = hardwareMap.get(DcMotor.class, "LeftRear");
+        RightFront = hardwareMap.get(DcMotor.class, "RightFront");
+        RightRear = hardwareMap.get(DcMotor.class, "RightRear");
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
