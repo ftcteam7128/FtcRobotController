@@ -198,4 +198,42 @@ public class BasicOpMode_Linear extends LinearOpMode {
         RightRear.setPower(0);
     }
 
+    public void turnRight(int deg, double speed){
+
+        // Get current motor positions
+        double lfPos = LeftFront.getCurrentPosition();
+        double lrPos = LeftRear.getCurrentPosition();
+        double rfPos = RightFront.getCurrentPosition();
+        double rrPos = RightRear.getCurrentPosition();
+
+        //calculate target positions
+        lfPos += deg * ENCODER_TICKS_PER_INCH;
+        lrPos += deg * ENCODER_TICKS_PER_INCH;
+        rfPos -= deg * ENCODER_TICKS_PER_INCH;
+        rrPos -= deg * ENCODER_TICKS_PER_INCH;
+
+        // Set the motors to the calculated positions
+        LeftFront.setTargetPosition((int)lfPos);
+        LeftRear.setTargetPosition((int)lrPos);
+        RightFront.setTargetPosition((int)rfPos);
+        RightRear.setTargetPosition((int)rrPos);
+        LeftFront.setPower(speed);
+        LeftRear.setPower(speed);
+        RightFront.setPower(speed);
+        RightRear.setPower(speed);
+
+        // waiting for it to complete
+        while(LeftFront.isBusy() && LeftRear.isBusy() && RightFront.isBusy() && RightRear.isBusy()){
+            telemetry.addLine("Moving forward");
+            telemetry.addData("Target" , %.2f, %.2f, %,2f, %.2f, lfPos , lrPos, rrPos, rfPos);  telemetry.addData("Actual" , %.2f, %.2f, %,2f, %.2f, LeftFront.getCurrentPosition() , LeftRear.getCurrentPosition(), RightRear.getCurrentPosition(), RightFront.getCurrentPosition());
+            telemetry.update();
+        }
+
+        // Stop all the motors
+        LeftFront.setPower(0);
+        LeftRear.setPower(0);
+        RightFront.setPower(0);
+        RightRear.setPower(0);
+    }
+
 }
