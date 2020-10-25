@@ -93,7 +93,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
         sleep(1000);
         RightRear.setPower(0);
 
-        // Moving forward for 5 seconds
+        // Moving forward
         LeftFront.setPower(-0.5);
         RightFront.setPower(0.5);
         LeftRear.setPower(-0.5);
@@ -104,7 +104,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
         LeftRear.setPower(0);
         RightRear.setPower(0);
 
-        // Moving backward for 5 seconds
+        // Moving backward
         LeftFront.setPower(0.5);
         RightFront.setPower(-0.5);
         LeftRear.setPower(0.5);
@@ -115,62 +115,35 @@ public class BasicOpMode_Linear extends LinearOpMode {
         LeftRear.setPower(0);
         RightRear.setPower(0);
 
-        /*
-        // Most robots need the motor on one side to be reversed to drive forward
-        // Reverse the motor that runs backwards when connected directly to the battery
-        // leftDrive.setDirection(DcMotor.Direction.FORWARD);
-        // rightDrive.setDirection(DcMotor.Direction.REVERSE);
-        LeftFront.setDirection(DcMotor.Direction.REVERSE);
-        RightRear.setDirection(DcMotor.Direction.REVERSE);
 
-        // Encoders
-        LeftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        LeftRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        RightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        RightRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        LeftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        LeftRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        RightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        RightRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        // Wait for the game to start (driver presses PLAY)
-        waitForStart();
-        runtime.reset();
-
-        // run until the end of the match (driver presses STOP)
-        while (opModeIsActive()) {
-            double xPos = -gamepad1.right_stick_x;
-            double yPos = -gamepad1.right_stick_y;
-            double rot = -gamepad1.left_stick_x;
-
-            double scalar = Math.hypot(yPos,xPos);
-            double maxPower = 1;
-
-            double flPower = scalar*(xPos + yPos + rot);
-            double frPower = scalar*(xPos - yPos - rot);
-            double rlPower = scalar*(xPos - yPos + rot);
-            double rrPower = scalar*(xPos + yPos - rot);
-
-            if (maxPower > 1) {
-                scalar /= maxPower;
-            } else {
-                scalar = 1;
-            }
-
-            flPower = scalar*(xPos + yPos + rot);
-            frPower = scalar*(xPos - yPos - rot);
-            rlPower = scalar*(xPos - yPos + rot);
-            rrPower = scalar*(xPos + yPos - rot);
-
-            LeftFront.setPower(flPower);
-            LeftRear.setPower(frPower);
-            RightFront.setPower(rlPower);
-            RightRear.setPower(rrPower);
-        }
-
-         */
     }
 
+    public void moveInches(int inches, double speed){
+
+        // Get current motor positions
+        double lfPos = LeftFront.getCurrentPosition();
+        double lrPos = LeftRear.getCurrentPosition();
+        double rfPos = RightFront.getCurrentPosition();
+        double rrPos = RightRear.getCurrentPosition();
+
+        double ENCODER_TICKS_PER_INCH = (288./(2.6* 4 * Math.PI));
+
+        // Calculate new target positions
+        lfPos += inches * ENCODER_TICKS_PER_INCH;
+        lrPos += inches * ENCODER_TICKS_PER_INCH;
+        rfPos += inches * ENCODER_TICKS_PER_INCH;
+        rrPos += inches * ENCODER_TICKS_PER_INCH;
+
+        // Set the motors to the calculated positions
+        LeftFront.setTargetPosition((int)lfPos);
+        LeftRear.setTargetPosition((int)lrPos);
+        RightFront.setTargetPosition((int)rfPos);
+        RightRear.setTargetPosition((int)rrPos);
+        LeftFront.setPower(speed);
+        LeftRear.setPower(speed);
+        RightFront.setPower(speed);
+        RightRear.setPower(speed);
+    }
 
 }
