@@ -144,6 +144,14 @@ public class BasicOpMode_Linear extends LinearOpMode {
         LeftRear.setPower(speed);
         RightFront.setPower(speed);
         RightRear.setPower(speed);
+
+        // waiting for it to complete
+        while(LeftFront.isBusy() && LeftRear.isBusy() && RightFront.isBusy() && RightRear.isBusy()){
+            telemetry.addLine("Moving forward");
+        }
+        telemetry.addData("Target" , %.2f, %.2f, %,2f, %.2f, lfPos , lrPos, rrPos, rfPos);
+        telemetry.addData("Actual" , %.2f, %.2f, %,2f, %.2f, LeftFront.getCurrentPosition() , LeftRear.getCurrentPosition(), RightRear.getCurrentPosition(), RightFront.getCurrentPosition());
+        telemetry.update();
     }
 
 }
