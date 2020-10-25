@@ -148,10 +148,15 @@ public class BasicOpMode_Linear extends LinearOpMode {
         // waiting for it to complete
         while(LeftFront.isBusy() && LeftRear.isBusy() && RightFront.isBusy() && RightRear.isBusy()){
             telemetry.addLine("Moving forward");
+            telemetry.addData("Target" , %.2f, %.2f, %,2f, %.2f, lfPos , lrPos, rrPos, rfPos);  telemetry.addData("Actual" , %.2f, %.2f, %,2f, %.2f, LeftFront.getCurrentPosition() , LeftRear.getCurrentPosition(), RightRear.getCurrentPosition(), RightFront.getCurrentPosition());
+            telemetry.update();
         }
-        telemetry.addData("Target" , %.2f, %.2f, %,2f, %.2f, lfPos , lrPos, rrPos, rfPos);
-        telemetry.addData("Actual" , %.2f, %.2f, %,2f, %.2f, LeftFront.getCurrentPosition() , LeftRear.getCurrentPosition(), RightRear.getCurrentPosition(), RightFront.getCurrentPosition());
-        telemetry.update();
+
+        // Stop all the motors
+        LeftFront.setPower(0);
+        LeftRear.setPower(0);
+        RightFront.setPower(0);
+        RightRear.setPower(0);
     }
 
 }
