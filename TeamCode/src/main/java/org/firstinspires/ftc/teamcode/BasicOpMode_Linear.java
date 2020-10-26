@@ -65,20 +65,30 @@ public class BasicOpMode_Linear extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        // Initialize the hardware variables. Note that the strings used here as parameters
-        // to 'get' must correspond to the names assigned during the robot configuration
-        // step (using the FTC Robot Controller app on the phone).
-        // leftDrive  = hardwareMap.get(DcMotor.class, "left_drive");
-        // rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
+        // Hardware map
         LeftFront = hardwareMap.get(DcMotor.class, "LeftFront");
         LeftRear = hardwareMap.get(DcMotor.class, "LeftRear");
         RightFront = hardwareMap.get(DcMotor.class, "RightFront");
         RightRear = hardwareMap.get(DcMotor.class, "RightRear");
 
-        // Testing each motor individualy
+        // Setting encoders
+        LeftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        LeftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        RightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        RightRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        LeftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        LeftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        RightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        RightRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        waitForStart();
+
+        // Testing each motor individually
         LeftFront.setPower(0.5);
         sleep(1000);
         LeftFront.setPower(0);
@@ -117,8 +127,20 @@ public class BasicOpMode_Linear extends LinearOpMode {
         LeftRear.setPower(0);
         RightRear.setPower(0);
 
+        // Move 10 inches forward
+        moveInches(10, 0.25f);
 
+        // Strafe 10 inches right
+        strafeRight(10, 0.25f);
 
+        // Strafe 10 inches left
+        strafeRight(-10, 0.25f);
+
+        // Turning 90 degrees right
+        turnRight(90, 0.25f);
+
+        // Turning 90 degrees left
+        turnRight(-90, 0.25f);
     }
 
     public void moveInches(int inches, double speed){
@@ -145,10 +167,11 @@ public class BasicOpMode_Linear extends LinearOpMode {
         RightFront.setPower(speed);
         RightRear.setPower(speed);
 
-        // waiting for it to complete
+        // Waiting for it to complete
         while(LeftFront.isBusy() && LeftRear.isBusy() && RightFront.isBusy() && RightRear.isBusy()){
             telemetry.addLine("Moving forward");
-            telemetry.addData("Target" , %.2f, %.2f, %,2f, %.2f, lfPos , lrPos, rrPos, rfPos);  telemetry.addData("Actual" , %.2f, %.2f, %,2f, %.2f, LeftFront.getCurrentPosition() , LeftRear.getCurrentPosition(), RightRear.getCurrentPosition(), RightFront.getCurrentPosition());
+            telemetry.addData("Target", "%.2f", lfPos, lrPos, rrPos, rfPos);
+            telemetry.addData("Actual" , "%.2f", LeftFront.getCurrentPosition() , LeftRear.getCurrentPosition(), RightRear.getCurrentPosition(), RightFront.getCurrentPosition());
             telemetry.update();
         }
 
@@ -186,8 +209,9 @@ public class BasicOpMode_Linear extends LinearOpMode {
 
         // waiting for it to complete
         while(LeftFront.isBusy() && LeftRear.isBusy() && RightFront.isBusy() && RightRear.isBusy()){
-            telemetry.addLine("Moving forward");
-            telemetry.addData("Target" , %.2f, %.2f, %,2f, %.2f, lfPos , lrPos, rrPos, rfPos);  telemetry.addData("Actual" , %.2f, %.2f, %,2f, %.2f, LeftFront.getCurrentPosition() , LeftRear.getCurrentPosition(), RightRear.getCurrentPosition(), RightFront.getCurrentPosition());
+            telemetry.addLine("Strafing");
+            telemetry.addData("Target" ,"%.2f", lfPos , lrPos, rrPos, rfPos);
+            telemetry.addData("Actual" ," %.2f", LeftFront.getCurrentPosition() , LeftRear.getCurrentPosition(), RightRear.getCurrentPosition(), RightFront.getCurrentPosition());
             telemetry.update();
         }
 
@@ -222,10 +246,11 @@ public class BasicOpMode_Linear extends LinearOpMode {
         RightFront.setPower(speed);
         RightRear.setPower(speed);
 
-        // waiting for it to complete
+        // Waiting for it to complete
         while(LeftFront.isBusy() && LeftRear.isBusy() && RightFront.isBusy() && RightRear.isBusy()){
-            telemetry.addLine("Moving forward");
-            telemetry.addData("Target" , %.2f, %.2f, %,2f, %.2f, lfPos , lrPos, rrPos, rfPos);  telemetry.addData("Actual" , %.2f, %.2f, %,2f, %.2f, LeftFront.getCurrentPosition() , LeftRear.getCurrentPosition(), RightRear.getCurrentPosition(), RightFront.getCurrentPosition());
+            telemetry.addLine("Turning");
+            telemetry.addData("Target", "%.2f", lfPos , lrPos, rrPos, rfPos);
+            telemetry.addData("Actual" , "%.2f", LeftFront.getCurrentPosition() , LeftRear.getCurrentPosition(), RightRear.getCurrentPosition(), RightFront.getCurrentPosition());
             telemetry.update();
         }
 
