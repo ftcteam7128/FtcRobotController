@@ -132,19 +132,41 @@ public class BasicOpMode_Linear extends LinearOpMode {
         RightRear.setPower(0);
 
         // Move 10 inches forward
-        moveInches(10, 0.25f); // 20 in
+        // moveInches(10, 0.25f); // 20 in
 
         // Strafe 10 inches right
-        strafeRight(10, 0.25f);
+        // strafeRight(10, 0.25f);
 
         // Strafe 10 inches left
-        strafeRight(-10, 0.25f);
+        // strafeRight(-10, 0.25f);
 
         // Turning 90 degrees right
-        turnRight(90, 0.25f);
+        // turnRight(90, 0.25f);
 
         // Turning 90 degrees left
-        turnRight(-90, 0.25f);
+        // turnRight(-90, 0.25f);
+    }
+
+    public void motorTest(DcMotor motor, int inches, double speed){
+
+        double motPos = motor.getCurrentPosition();
+        // motPos += inches * ENCODER_TICKS_PER_INCH;
+        motPos += 1000 * ENCODER_TICKS_PER_INCH; // 1000 ticks
+        motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motor.setTargetPosition((int)motPos);
+        motor.setPower(speed);
+
+        while(motor.isBusy()){
+            telemetry.addLine("IS BUSY");
+            sleep(1000);
+            telemetry.addData("Target", "%.2f", motPos);
+            sleep(1000);
+            telemetry.addData("Actual", "%.2f", motor.getCurrentPosition());
+            sleep(1000);
+            telemetry.update();
+        }
+
+        motor.setPower(0);
     }
 
     public void moveInches(int inches, double speed){
@@ -161,11 +183,17 @@ public class BasicOpMode_Linear extends LinearOpMode {
         rfPos += inches * ENCODER_TICKS_PER_INCH;
         rrPos += inches * ENCODER_TICKS_PER_INCH;
 
+        LeftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        LeftRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        RightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        RightRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
         // Set the motors to the calculated positions
         LeftFront.setTargetPosition((int)lfPos); // integerizing problem
         LeftRear.setTargetPosition((int)lrPos);
         RightFront.setTargetPosition((int)rfPos);
         RightRear.setTargetPosition((int)rrPos);
+
         LeftFront.setPower(speed);
         LeftRear.setPower(speed);
         RightFront.setPower(speed);
