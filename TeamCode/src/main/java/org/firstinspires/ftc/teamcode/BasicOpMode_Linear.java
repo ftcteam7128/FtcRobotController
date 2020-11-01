@@ -50,7 +50,7 @@ import com.qualcomm.robotcore.util.Range;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Basic: Linear OpMode", group="Linear Opmode")
+@TeleOp(name="Basic: Linear OpMode", group="Linear Opmode") // CHANGE ANNOTATION
 
 public class BasicOpMode_Linear extends LinearOpMode {
 
@@ -61,7 +61,11 @@ public class BasicOpMode_Linear extends LinearOpMode {
     private DcMotor RightFront = null;
     private DcMotor RightRear = null;
 
-    double ENCODER_TICKS_PER_INCH = (288./(2.6* 4 * Math.PI));
+    // double ENCODER_TICKS_PER_INCH = (288./(2.6* 4 * Math.PI));
+    // double ENCODER_TICKS_PER_INCH = (4*Math.PI) / 360.; // basically 0
+    // double ENCODER_TICKS_PER_INCH = 100; // 4000      288 40 2.6
+    double ENCODER_TICKS_PER_INCH = ((28 * 40)/2.6)/(Math.PI*4);
+    // diameter*pi / 360
 
     @Override
     public void runOpMode() {
@@ -88,7 +92,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
 
         waitForStart();
 
-        // Testing each motor individually
+        // Testing each motor individually (backwards)
         LeftFront.setPower(0.5);
         sleep(1000);
         LeftFront.setPower(0);
@@ -128,7 +132,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
         RightRear.setPower(0);
 
         // Move 10 inches forward
-        moveInches(10, 0.25f);
+        moveInches(10, 0.25f); // 20 in
 
         // Strafe 10 inches right
         strafeRight(10, 0.25f);
@@ -158,7 +162,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
         rrPos += inches * ENCODER_TICKS_PER_INCH;
 
         // Set the motors to the calculated positions
-        LeftFront.setTargetPosition((int)lfPos);
+        LeftFront.setTargetPosition((int)lfPos); // integerizing problem
         LeftRear.setTargetPosition((int)lrPos);
         RightFront.setTargetPosition((int)rfPos);
         RightRear.setTargetPosition((int)rrPos);
@@ -167,12 +171,15 @@ public class BasicOpMode_Linear extends LinearOpMode {
         RightFront.setPower(speed);
         RightRear.setPower(speed);
 
+        sleep(5000); // shorten
+        // whey isnt while loop exeecuting? one isnt busy
         // Waiting for it to complete
         while(LeftFront.isBusy() && LeftRear.isBusy() && RightFront.isBusy() && RightRear.isBusy()){
             telemetry.addLine("Moving forward");
-            telemetry.addData("Target", "%.2f", lfPos, lrPos, rrPos, rfPos);
-            telemetry.addData("Actual" , "%.2f", LeftFront.getCurrentPosition() , LeftRear.getCurrentPosition(), RightRear.getCurrentPosition(), RightFront.getCurrentPosition());
+           //  telemetry.addData("Target", "%.2f", lfPos, lrPos, rrPos, rfPos);
+           //  telemetry.addData("Actual" , "%.2f", LeftFront.getCurrentPosition() , LeftRear.getCurrentPosition(), RightRear.getCurrentPosition(), RightFront.getCurrentPosition());
             telemetry.update();
+            sleep(100);
         }
 
         // Stop all the motors
