@@ -50,7 +50,7 @@ import com.qualcomm.robotcore.util.Range;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Basic: Linear OpMode", group="Linear Opmode")
+@TeleOp(name="Basic: Linear OpMode", group="Linear Opmode") // CHANGE ANNOTATION
 
 public class BasicOpMode_Linear extends LinearOpMode {
 
@@ -61,24 +61,38 @@ public class BasicOpMode_Linear extends LinearOpMode {
     private DcMotor RightFront = null;
     private DcMotor RightRear = null;
 
-    double ENCODER_TICKS_PER_INCH = (288./(2.6* 4 * Math.PI));
+    // double ENCODER_TICKS_PER_INCH = (288./(2.6* 4 * Math.PI));
+    // double ENCODER_TICKS_PER_INCH = (4*Math.PI) / 360.; // basically 0
+    // double ENCODER_TICKS_PER_INCH = 100; // 4000      288 40 2.6
+    double ENCODER_TICKS_PER_INCH = ((28 * 40)/2.6)/(Math.PI*4);
+    // diameter*pi / 360
 
     @Override
     public void runOpMode() {
+
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        // Initialize the hardware variables. Note that the strings used here as parameters
-        // to 'get' must correspond to the names assigned during the robot configuration
-        // step (using the FTC Robot Controller app on the phone).
-        // leftDrive  = hardwareMap.get(DcMotor.class, "left_drive");
-        // rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
+        // Hardware map
         LeftFront = hardwareMap.get(DcMotor.class, "LeftFront");
         LeftRear = hardwareMap.get(DcMotor.class, "LeftRear");
         RightFront = hardwareMap.get(DcMotor.class, "RightFront");
         RightRear = hardwareMap.get(DcMotor.class, "RightRear");
 
-        // Testing each motor individualy
+        // Setting encoders
+        LeftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        LeftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        RightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        RightRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        LeftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        LeftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        RightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        RightRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        waitForStart();
+
+        // Testing each motor individually (backwards)
         LeftFront.setPower(0.5);
         sleep(1000);
         LeftFront.setPower(0);
@@ -117,8 +131,42 @@ public class BasicOpMode_Linear extends LinearOpMode {
         LeftRear.setPower(0);
         RightRear.setPower(0);
 
+        // Move 10 inches forward
+        // moveInches(10, 0.25f); // 20 in
 
+        // Strafe 10 inches right
+        // strafeRight(10, 0.25f);
 
+        // Strafe 10 inches left
+        // strafeRight(-10, 0.25f);
+
+        // Turning 90 degrees right
+        // turnRight(90, 0.25f);
+
+        // Turning 90 degrees left
+        // turnRight(-90, 0.25f);
+    }
+
+    public void motorTest(DcMotor motor, int inches, double speed){
+
+        double motPos = motor.getCurrentPosition();
+        // motPos += inches * ENCODER_TICKS_PER_INCH;
+        motPos += 1000 * ENCODER_TICKS_PER_INCH; // 1000 ticks
+        motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motor.setTargetPosition((int)motPos);
+        motor.setPower(speed);
+
+        while(motor.isBusy()){
+            telemetry.addLine("IS BUSY");
+            sleep(1000);
+            telemetry.addData("Target", "%.2f", motPos);
+            sleep(1000);
+            telemetry.addData("Actual", "%.2f", motor.getCurrentPosition());
+            sleep(1000);
+            telemetry.update();
+        }
+
+        motor.setPower(0);
     }
 
     public void moveInches(int inches, double speed){
@@ -135,21 +183,31 @@ public class BasicOpMode_Linear extends LinearOpMode {
         rfPos += inches * ENCODER_TICKS_PER_INCH;
         rrPos += inches * ENCODER_TICKS_PER_INCH;
 
+        LeftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        LeftRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        RightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        RightRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
         // Set the motors to the calculated positions
-        LeftFront.setTargetPosition((int)lfPos);
+        LeftFront.setTargetPosition((int)lfPos); // integerizing problem
         LeftRear.setTargetPosition((int)lrPos);
         RightFront.setTargetPosition((int)rfPos);
         RightRear.setTargetPosition((int)rrPos);
+
         LeftFront.setPower(speed);
         LeftRear.setPower(speed);
         RightFront.setPower(speed);
         RightRear.setPower(speed);
 
-        // waiting for it to complete
+        sleep(5000); // shorten
+        // whey isnt while loop exeecuting? one isnt busy
+        // Waiting for it to complete
         while(LeftFront.isBusy() && LeftRear.isBusy() && RightFront.isBusy() && RightRear.isBusy()){
             telemetry.addLine("Moving forward");
-            telemetry.addData("Target" , %.2f, %.2f, %,2f, %.2f, lfPos , lrPos, rrPos, rfPos);  telemetry.addData("Actual" , %.2f, %.2f, %,2f, %.2f, LeftFront.getCurrentPosition() , LeftRear.getCurrentPosition(), RightRear.getCurrentPosition(), RightFront.getCurrentPosition());
+           //  telemetry.addData("Target", "%.2f", lfPos, lrPos, rrPos, rfPos);
+           //  telemetry.addData("Actual" , "%.2f", LeftFront.getCurrentPosition() , LeftRear.getCurrentPosition(), RightRear.getCurrentPosition(), RightFront.getCurrentPosition());
             telemetry.update();
+            sleep(100);
         }
 
         // Stop all the motors
@@ -186,8 +244,48 @@ public class BasicOpMode_Linear extends LinearOpMode {
 
         // waiting for it to complete
         while(LeftFront.isBusy() && LeftRear.isBusy() && RightFront.isBusy() && RightRear.isBusy()){
-            telemetry.addLine("Moving forward");
-            telemetry.addData("Target" , %.2f, %.2f, %,2f, %.2f, lfPos , lrPos, rrPos, rfPos);  telemetry.addData("Actual" , %.2f, %.2f, %,2f, %.2f, LeftFront.getCurrentPosition() , LeftRear.getCurrentPosition(), RightRear.getCurrentPosition(), RightFront.getCurrentPosition());
+            telemetry.addLine("Strafing");
+            telemetry.addData("Target" ,"%.2f", lfPos , lrPos, rrPos, rfPos);
+            telemetry.addData("Actual" ," %.2f", LeftFront.getCurrentPosition() , LeftRear.getCurrentPosition(), RightRear.getCurrentPosition(), RightFront.getCurrentPosition());
+            telemetry.update();
+        }
+
+        // Stop all the motors
+        LeftFront.setPower(0);
+        LeftRear.setPower(0);
+        RightFront.setPower(0);
+        RightRear.setPower(0);
+    }
+
+    public void turnRight(int deg, double speed){
+
+        // Get current motor positions
+        double lfPos = LeftFront.getCurrentPosition();
+        double lrPos = LeftRear.getCurrentPosition();
+        double rfPos = RightFront.getCurrentPosition();
+        double rrPos = RightRear.getCurrentPosition();
+
+        //calculate target positions
+        lfPos += deg * ENCODER_TICKS_PER_INCH;
+        lrPos += deg * ENCODER_TICKS_PER_INCH;
+        rfPos -= deg * ENCODER_TICKS_PER_INCH;
+        rrPos -= deg * ENCODER_TICKS_PER_INCH;
+
+        // Set the motors to the calculated positions
+        LeftFront.setTargetPosition((int)lfPos);
+        LeftRear.setTargetPosition((int)lrPos);
+        RightFront.setTargetPosition((int)rfPos);
+        RightRear.setTargetPosition((int)rrPos);
+        LeftFront.setPower(speed);
+        LeftRear.setPower(speed);
+        RightFront.setPower(speed);
+        RightRear.setPower(speed);
+
+        // Waiting for it to complete
+        while(LeftFront.isBusy() && LeftRear.isBusy() && RightFront.isBusy() && RightRear.isBusy()){
+            telemetry.addLine("Turning");
+            telemetry.addData("Target", "%.2f", lfPos , lrPos, rrPos, rfPos);
+            telemetry.addData("Actual" , "%.2f", LeftFront.getCurrentPosition() , LeftRear.getCurrentPosition(), RightRear.getCurrentPosition(), RightFront.getCurrentPosition());
             telemetry.update();
         }
 
