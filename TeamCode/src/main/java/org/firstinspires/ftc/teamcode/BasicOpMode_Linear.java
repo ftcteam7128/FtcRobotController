@@ -51,6 +51,17 @@ import com.qualcomm.robotcore.util.Range;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
+/*
+11/5 TEST PLAN
+- moveTicks()
+    - Check one motor individually to see if it moves exactly how many ticks it was supposed to move
+    - Print encoder position in telemetry
+    - Use a timeout to slow down the while loop? What is the significance of that?
+
+- newMoveInches()
+    - Test this only if moveTicks() was accurate
+
+ */
 @Autonomous(name="Basic: Linear OpMode", group="Linear Opmode") // CHANGE ANNOTATION
 
 public class BasicOpMode_Linear extends LinearOpMode {
@@ -139,32 +150,96 @@ public class BasicOpMode_Linear extends LinearOpMode {
         // Turning 90 degrees left
         // turnRight(-90, 0.25f);
 
+        //  11/5 TEST
         moveTicks(1000, LeftFront, 0.25f);
+        newMoveInches(10, 0.25f);
+
     }
 
     public void moveTicks(int ticks, DcMotor motor, double speed){
 
         setUpEncoders();
+        int motTarget;
 
         if(opModeIsActive()){
 
-            int motTarget = motor.getCurrentPosition() + ticks;
-
+            motTarget = motor.getCurrentPosition() + ticks;
             motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
             motor.setTargetPosition(motTarget);
 
-            runtime.reset();
+            runtime.reset(); // Why?
             motor.setPower(speed);
 
-
             while(opModeIsActive() && motor.isBusy()) { // check runtime position as well?
-                telemetry.addData("Encoder position", motor.getCurrentPosition());
+                telemetry.addData("Encoder position", "%.2f", motor.getCurrentPosition());
+                telemetry.addData("Target position", "%.2f", motTarget);
                 telemetry.update();
             }
         }
         motor.setPower(0);
         motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    public void newMoveInches(int inches,  double speed/*, double timeout*/){
+
+        setUpEncoders();
+
+        int lfTarget;
+        int lrTarget;
+        int rfTarget;
+        int rrTarget;
+
+        if(opModeIsActive()){
+
+            lfTarget = LeftFront.getCurrentPosition() + (int)(ENCODER_TICKS_PER_INCH*inches);
+            lrTarget = LeftRear.getCurrentPosition() + (int)(ENCODER_TICKS_PER_INCH*inches);
+            rfTarget = RightFront.getCurrentPosition() + (int)(ENCODER_TICKS_PER_INCH*inches);
+            rrTarget = RightRear.getCurrentPosition() + (int)(ENCODER_TICKS_PER_INCH*inches);
+
+            setRunToPos();
+
+            LeftFront.setTargetPosition(lfTarget);
+            LeftRear.setTargetPosition(lrTarget);
+            RightFront.setTargetPosition(rfTarget);
+            RightRear.setTargetPosition(rrTarget);
+
+            runtime.reset(); // Why?
+
+            LeftFront.setPower(speed);
+            LeftRear.setPower(speed);
+            RightFront.setPower(speed);
+            RightRear.setPower(speed);
+
+            // Check if runtime is less than timeout parameter here as well?
+            while(opModeIsActive() && (LeftFront.isBusy() || LeftRear.isBusy() || RightFront.isBusy() || RightRear.isBusy())){
+                telemetry.addData("LF Target", "%.2f", lfTarget);
+                telemetry.addData("LR Target", "%.2f", lrTarget);
+                telemetry.addData("RF Target", "%.2f", rfTarget);
+                telemetry.addData("LF Target", "%.2f", lfTarget);
+                telemetry.addData("LR Target", "%.2f", lrTarget);
+
+                telemetry.addData("LF POS", "%.2f", LeftFront.getCurrentPosition());
+                telemetry.addData("LR POS", "%.2f", LeftRear.getCurrentPosition());
+                telemetry.addData("RF POS", "%.2f", RightFront.getCurrentPosition());
+                telemetry.addData("RR POS", "%.2f", RightRear.getCurrentPosition());
+
+                telemetry.update();
+            }
+            stopAllMotors();
+
+            LeftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            LeftRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            RightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            RightRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        }
+    }
+
+    public void stopAllMotors(){
+        LeftFront.setPower(0);
+        LeftRear.setPower(0);
+        RightFront.setPower(0);
+        RightRear.setPower(0);
     }
 
     public void setRunToPos(){
@@ -184,29 +259,6 @@ public class BasicOpMode_Linear extends LinearOpMode {
         LeftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         RightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         RightRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    }
-
-    public void motorTest(DcMotor motor, int inches, double speed){
-
-
-        double motPos = motor.getCurrentPosition();
-        // motPos += inches * ENCODER_TICKS_PER_INCH;
-        motPos += 1000 * ENCODER_TICKS_PER_INCH; // 1000 ticks
-        motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motor.setTargetPosition((int)motPos);
-        motor.setPower(speed);
-
-        while(motor.isBusy()){
-            telemetry.addLine("IS BUSY");
-            sleep(1000);
-            telemetry.addData("Target", "%.2f", motPos);
-            sleep(1000);
-            telemetry.addData("Actual", "%.2f", motor.getCurrentPosition());
-            sleep(1000);
-            telemetry.update();
-        }
-
-        motor.setPower(0);
     }
 
     public void moveInches(int inches, double speed){
@@ -277,6 +329,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
         LeftRear.setTargetPosition((int)lrPos);
         RightFront.setTargetPosition((int)rfPos);
         RightRear.setTargetPosition((int)rrPos);
+
         LeftFront.setPower(speed);
         LeftRear.setPower(speed);
         RightFront.setPower(speed);
@@ -300,10 +353,10 @@ public class BasicOpMode_Linear extends LinearOpMode {
     public void turnRight(int deg, double speed){
 
         // Get current motor positions
-        double lfPos = LeftFront.getCurrentPosition();
-        double lrPos = LeftRear.getCurrentPosition();
-        double rfPos = RightFront.getCurrentPosition();
-        double rrPos = RightRear.getCurrentPosition();
+        int lfPos = LeftFront.getCurrentPosition();
+        int lrPos = LeftRear.getCurrentPosition();
+        int rfPos = RightFront.getCurrentPosition();
+        int rrPos = RightRear.getCurrentPosition();
 
         //calculate target positions
         lfPos += deg * ENCODER_TICKS_PER_INCH;
@@ -312,10 +365,11 @@ public class BasicOpMode_Linear extends LinearOpMode {
         rrPos -= deg * ENCODER_TICKS_PER_INCH;
 
         // Set the motors to the calculated positions
-        LeftFront.setTargetPosition((int)lfPos);
-        LeftRear.setTargetPosition((int)lrPos);
-        RightFront.setTargetPosition((int)rfPos);
-        RightRear.setTargetPosition((int)rrPos);
+        LeftFront.setTargetPosition(lfPos);
+        LeftRear.setTargetPosition(lrPos);
+        RightFront.setTargetPosition(rfPos);
+        RightRear.setTargetPosition(rrPos);
+
         LeftFront.setPower(speed);
         LeftRear.setPower(speed);
         RightFront.setPower(speed);
