@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -50,7 +51,7 @@ import com.qualcomm.robotcore.util.Range;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Basic: Linear OpMode", group="Linear Opmode") // CHANGE ANNOTATION
+@Autonomous(name="Basic: Linear OpMode", group="Linear Opmode") // CHANGE ANNOTATION
 
 public class BasicOpMode_Linear extends LinearOpMode {
 
@@ -80,15 +81,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
         RightRear = hardwareMap.get(DcMotor.class, "RightRear");
 
         // Setting encoders
-        LeftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        LeftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        RightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        RightRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        LeftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        LeftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        RightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        RightRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        setUpEncoders();
 
         waitForStart();
 
@@ -145,9 +138,56 @@ public class BasicOpMode_Linear extends LinearOpMode {
 
         // Turning 90 degrees left
         // turnRight(-90, 0.25f);
+
+        moveTicks(1000, LeftFront, 0.25f);
+    }
+
+    public void moveTicks(int ticks, DcMotor motor, double speed){
+
+        setUpEncoders();
+
+        if(opModeIsActive()){
+
+            int motTarget = motor.getCurrentPosition() + ticks;
+
+            motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            motor.setTargetPosition(motTarget);
+
+            runtime.reset();
+            motor.setPower(speed);
+
+
+            while(opModeIsActive() && motor.isBusy()) { // check runtime position as well?
+                telemetry.addData("Encoder position", motor.getCurrentPosition());
+                telemetry.update();
+            }
+        }
+        motor.setPower(0);
+        motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    public void setRunToPos(){
+        LeftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        LeftRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        RightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        RightRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+
+    public void setUpEncoders(){
+        LeftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        LeftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        RightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        RightRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        LeftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        LeftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        RightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        RightRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     public void motorTest(DcMotor motor, int inches, double speed){
+
 
         double motPos = motor.getCurrentPosition();
         // motPos += inches * ENCODER_TICKS_PER_INCH;
