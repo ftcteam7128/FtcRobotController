@@ -92,10 +92,11 @@ public class BasicOpMode_Linear extends LinearOpMode {
         RightRear = hardwareMap.get(DcMotor.class, "RightRear");
 
         // Setting encoders
-        setUpEncoders();
+        // setUpEncoders();
 
         waitForStart();
 
+        setUpEncoders();
         /*
         // Testing each motor individually (backwards)
         LeftFront.setPower(0.5);

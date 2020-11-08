@@ -1,9 +1,10 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-
+@Autonomous
 public class MechWheelOps {
 
     private DcMotor LeftFront = null;
@@ -23,6 +24,52 @@ public class MechWheelOps {
 
         opMode = mode;
     }
+
+    public void moveInches(int inches, double speed){
+        telemetry.addLine("INSIDE MOVEINCHES");
+        sleep(1000);
+        setUpEncoders();
+
+        if(opModeIsActive()) {
+            // Get current motor positions
+            int lfPos = LeftFront.getCurrentPosition();
+            int lrPos = LeftRear.getCurrentPosition();
+            int rfPos = RightFront.getCurrentPosition();
+            int rrPos = RightRear.getCurrentPosition();
+
+            // Calculate new target positions
+            lfPos += inches * ENCODER_TICKS_PER_INCH;
+            lrPos += inches * ENCODER_TICKS_PER_INCH;
+            rfPos += inches * ENCODER_TICKS_PER_INCH;
+            rrPos += inches * ENCODER_TICKS_PER_INCH;
+
+            // Set the motors to the calculated positions
+            LeftFront.setTargetPosition(lfPos); // integerizing problem
+            LeftRear.setTargetPosition(lrPos);
+            RightFront.setTargetPosition(rfPos);
+            RightRear.setTargetPosition(rrPos);
+
+            LeftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            LeftRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            RightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            RightRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            LeftFront.setPower(speed);
+            LeftRear.setPower(speed);
+            RightFront.setPower(speed);
+            RightRear.setPower(speed);
+
+            sleep(5000);
+
+            while (LeftFront.isBusy()) {
+                telemetry.addLine("Moving forward");
+                telemetry.addData("Target LF", lfPos);
+                telemetry.addData("Actual LF", LeftFront.getCurrentPosition());
+                //  telemetry.addData("Actual" , "%.2f", LeftFront.getCurrentPosition() , LeftRear.getCurrentPosition(), RightRear.getCurrentPosition(), RightFront.getCurrentPosition());
+                telemetry.update();
+            }
+
+        }
 
     public void moveTicks(int ticks, DcMotor motor, double speed){
 
@@ -84,60 +131,6 @@ public class MechWheelOps {
         motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    public void newMoveInches(int inches,  double speed/*, double timeout*/){
-
-        setUpEncoders();
-
-        int lfTarget;
-        int lrTarget;
-        int rfTarget;
-        int rrTarget;
-
-        if(opModeIsActive()){
-
-            lfTarget = LeftFront.getCurrentPosition() + (int)(ENCODER_TICKS_PER_INCH*inches);
-            lrTarget = LeftRear.getCurrentPosition() + (int)(ENCODER_TICKS_PER_INCH*inches);
-            rfTarget = RightFront.getCurrentPosition() + (int)(ENCODER_TICKS_PER_INCH*inches);
-            rrTarget = RightRear.getCurrentPosition() + (int)(ENCODER_TICKS_PER_INCH*inches);
-
-            setRunToPos();
-
-            LeftFront.setTargetPosition(lfTarget);
-            LeftRear.setTargetPosition(lrTarget);
-            RightFront.setTargetPosition(rfTarget);
-            RightRear.setTargetPosition(rrTarget);
-
-            runtime.reset(); // Why?
-
-            LeftFront.setPower(speed);
-            LeftRear.setPower(speed);
-            RightFront.setPower(speed);
-            RightRear.setPower(speed);
-
-            // Check if runtime is less than timeout parameter here as well?
-            while(opModeIsActive() && (LeftFront.isBusy() || LeftRear.isBusy() || RightFront.isBusy() || RightRear.isBusy())){
-                telemetry.addData("LF Target", "%.2f", lfTarget);
-                telemetry.addData("LR Target", "%.2f", lrTarget);
-                telemetry.addData("RF Target", "%.2f", rfTarget);
-                telemetry.addData("LF Target", "%.2f", lfTarget);
-                telemetry.addData("LR Target", "%.2f", lrTarget);
-
-                telemetry.addData("LF POS", "%.2f", LeftFront.getCurrentPosition());
-                telemetry.addData("LR POS", "%.2f", LeftRear.getCurrentPosition());
-                telemetry.addData("RF POS", "%.2f", RightFront.getCurrentPosition());
-                telemetry.addData("RR POS", "%.2f", RightRear.getCurrentPosition());
-
-                telemetry.update();
-            }
-            stopAllMotors();
-
-            LeftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            LeftRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            RightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            RightRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        }
-    }
     public void setUpEncoders(){
         LeftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         LeftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
