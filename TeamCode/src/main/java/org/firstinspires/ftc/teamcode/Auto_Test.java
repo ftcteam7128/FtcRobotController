@@ -34,6 +34,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 /**
  * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
  * the autonomous or the teleop period of an FTC match. The names of OpModes appear on the menu
@@ -68,6 +70,7 @@ public class Auto_Test extends LinearOpMode {
     private DcMotor LeftRear = null;
     private DcMotor RightFront = null;
     private DcMotor RightRear = null;
+    private Telemetry telem;
 
     // double ENCODER_TICKS_PER_INCH = (288./(2.6* 4 * Math.PI));
     // double ENCODER_TICKS_PER_INCH = (4*Math.PI) / 360.; // basically 0
@@ -87,12 +90,17 @@ public class Auto_Test extends LinearOpMode {
         RightFront = hardwareMap.get(DcMotor.class, "RightFront");
         RightRear = hardwareMap.get(DcMotor.class, "RightRear");
 
-        MechWheelOps ops = new MechWheelOps(this, LeftFront, LeftRear, RightFront, RightRear);
+        MechWheelOps ops = new MechWheelOps(this, LeftFront, LeftRear, RightFront, RightRear, telem);
+
         // Setting encoders
-        ops.setUpEncoders();
+        LeftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        LeftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        // ops.setUpEncoders();
 
         waitForStart();
-        ops.newMoveInches(10, 0.25f);
+
+        ops.moveInches(10, 0.25f);
         ops.turnRight(90, 0.25f);
         ops.strafeRight(10, 0.25f);
         ops.turnRight(-90, 0.25f);

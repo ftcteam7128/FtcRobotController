@@ -1,12 +1,13 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-@Autonomous
+import com.qualcomm.robotcore.util.ElapsedTime;
+
 public class MechWheelOps {
 
+    private ElapsedTime runtime = new ElapsedTime();
     private DcMotor LeftFront = null;
     private DcMotor LeftRear = null;
     private DcMotor RightFront = null;
@@ -16,18 +17,19 @@ public class MechWheelOps {
     private Telemetry telemetry;
     double ENCODER_TICKS_PER_INCH = ((28 * 40)/2.6)/(Math.PI*4);
 
-    public MechWheelOps(OpMode mode, DcMotor lf, DcMotor lr, DcMotor rf, DcMotor rr){
-        LeftFront = lf;
-        LeftRear = lr;
-        RightFront = rf;
-        RightRear = rr;
+    public MechWheelOps(OpMode mode, DcMotor lf, DcMotor lr, DcMotor rf, DcMotor rr, Telemetry telem){
+        this.LeftFront = lf;
+        this.LeftRear = lr;
+        this.RightFront = rf;
+        this.RightRear = rr;
 
-        opMode = mode;
+        this.opMode = mode;
+        this.telemetry = telem;
     }
 
     public void moveInches(int inches, double speed){
         telemetry.addLine("INSIDE MOVEINCHES");
-        sleep(1000);
+        // sleep(1000);
         setUpEncoders();
 
         if(opModeIsActive()) {
@@ -131,17 +133,19 @@ public class MechWheelOps {
         motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
+
     public void setUpEncoders(){
         LeftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        LeftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        LeftRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         RightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         RightRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         LeftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        LeftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        LeftRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         RightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         RightRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
+
     public void strafeRight(int inches, double speed){
         // Get current motor positions
         double lfPos = LeftFront.getCurrentPosition();
