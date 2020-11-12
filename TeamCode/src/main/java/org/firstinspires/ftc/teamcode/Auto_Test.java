@@ -30,11 +30,17 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 
 /**
  * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
@@ -49,64 +55,59 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-/*
-11/5 TEST PLAN
-- moveTicks()
-    - Check one motor individually to see if it moves exactly how many ticks it was supposed to move
-    - Print encoder position in telemetry
-    - Use a timeout to slow down the while loop? What is the significance of that?
-
-- newMoveInches()
-    - Test this only if moveTicks() was accurate
-
- */
-@Autonomous(name="Basic: Linear OpMode", group="Linear Opmode") // CHANGE ANNOTATION
-
+@Autonomous(name="Basic: Linear OpMode", group="Linear Opmode")
 public class Auto_Test extends LinearOpMode {
 
-    // Declare OpMode members.
+    // Declare OpMode members
     private ElapsedTime runtime = new ElapsedTime();
+    private Telemetry telemetry;
+    private OpMode mode;
+
     private DcMotor LeftFront = null;
     private DcMotor LeftRear = null;
     private DcMotor RightFront = null;
     private DcMotor RightRear = null;
-    private Telemetry telem;
-
-    // double ENCODER_TICKS_PER_INCH = (288./(2.6* 4 * Math.PI));
-    // double ENCODER_TICKS_PER_INCH = (4*Math.PI) / 360.; // basically 0
-    // double ENCODER_TICKS_PER_INCH = 100; // 4000      288 40 2.6
-    double ENCODER_TICKS_PER_INCH = ((28 * 40) / 2.6) / (Math.PI * 4);
-    // diameter*pi / 360
 
     @Override
     public void runOpMode() {
 
-        telemetry.addData("Status", "Initialized");
+        telemetry.addData("Status", "Initialized Auto_Test");
         telemetry.update();
 
         // Hardware map
-        LeftFront = hardwareMap.get(DcMotor.class, "LeftFront");
-        LeftRear = hardwareMap.get(DcMotor.class, "LeftRear");
-        RightFront = hardwareMap.get(DcMotor.class, "RightFront");
-        RightRear = hardwareMap.get(DcMotor.class, "RightRear");
+        LeftFront  = hardwareMap.get(DcMotor.class, "LeftFront");
+        LeftRear  = hardwareMap.get(DcMotor.class, "LeftRear");
+        RightFront  = hardwareMap.get(DcMotor.class, "RightFront");
+        RightRear  = hardwareMap.get(DcMotor.class, "RightRear");
 
-        MechWheelOps ops = new MechWheelOps(this, LeftFront, LeftRear, RightFront, RightRear, telem);
+        // ---------------------------------- NEW ----------------------------------
+        LeftFront.setDirection(DcMotor.Direction.REVERSE);
+        LeftRear.setDirection(DcMotor.Direction.REVERSE);
+        RightFront.setDirection(DcMotor.Direction.FORWARD);
+        RightFront.setDirection(DcMotor.Direction.FORWARD);
 
-        // Setting encoders
-        LeftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        LeftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        // ---------------- CREATING INSTANCE OF MECWHEELOPS CLASS ----------------
+        MecWheelOps ops = new MecWheelOps(telemetry, this, LeftFront, LeftRear, RightFront, RightRear);
+        ops.setUpEncoders();
 
-        // ops.setUpEncoders();
-
+        // Wait for the game to start (driver presses PLAY)
         waitForStart();
+        runtime.reset();
 
+        // --------------------------- TESTS ---------------------------
+        // Moving LeftFront 1000 ticks
+        ops.moveTicks(1000, LeftFront, 0.25f);
+
+        // Moving the robot forward for 5 seconds
+        ops.moveForSeconds(5, 0.25f);
+
+        // Moving the robot backwards for 5 seconds
+        ops.moveForSeconds(5, -0.25f);
+
+        // Moving 10 inches forward
         ops.moveInches(10, 0.25f);
-        ops.turnRight(90, 0.25f);
-        ops.strafeRight(10, 0.25f);
-        ops.turnRight(-90, 0.25f);
-        ops.strafeRight(-10, 0.25f);
 
-
+        // Moving 10 inches backward
+        ops.moveInches(-10, 0.25f);
     }
 }
-
