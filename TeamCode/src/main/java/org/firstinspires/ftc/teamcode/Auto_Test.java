@@ -60,7 +60,7 @@ public class Auto_Test extends LinearOpMode {
 
     // Declare OpMode members
     private ElapsedTime runtime = new ElapsedTime();
-    private Telemetry telemetry;
+    // private Telemetry telemetry;
     private OpMode mode;
 
     private DcMotor LeftFront = null;
@@ -88,6 +88,12 @@ public class Auto_Test extends LinearOpMode {
         RightFront.setDirection(DcMotor.Direction.FORWARD);
         RightFront.setDirection(DcMotor.Direction.FORWARD);
 
+        LeftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        LeftRear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        RightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        RightRear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+
         // ---------------- CREATING INSTANCE OF MECWHEELOPS CLASS ----------------
         // MecWheelOps ops = new MecWheelOps(telemetry, this, LeftFront, LeftRear, RightFront, RightRear);
         // ops.setUpEncoders();
@@ -100,23 +106,23 @@ public class Auto_Test extends LinearOpMode {
         // --------------------------- TESTS ---------------------------
         // Moving LeftFront 1000 ticks
         // ops.moveTicks(1000, LeftFront, 0.25f);
-        moveTicks(1000, LeftFront, 0.25f);
+        // moveTicks(1000, LeftFront, 0.25f);
 
         // Moving the robot forward for 5 seconds
         // ops.moveForSeconds(5, 0.25f);
-        moveForSeconds(5, 0.25f);
+        // moveForSeconds(5, 0.25f);
 
         // Moving the robot backwards for 5 seconds
         // ops.moveForSeconds(5, 0.25f);
-        moveForSeconds(5, -0.25f);
+        // moveForSeconds(5, -0.25f);
 
         // Moving 10 inches forward
         // ops.moveInches(10, 0.25f);
-        moveInches(10, 0.25f);
+        // moveInches(10, 0.25f);
 
         // Moving 10 inches backward
         // ops.moveInches(-10, 0.25f);
-        moveInches(-10, -0.25f);
+        moveInches(10, -0.25f);
     }
 
     public void moveForSeconds(int secs, double speed){
@@ -203,7 +209,7 @@ public class Auto_Test extends LinearOpMode {
             RightFront.setPower(speed);
             RightRear.setPower(speed);
 
-            sleep(5000);
+            // sleep(5000);
 
             while (LeftFront.isBusy()) {
                 telemetry.addLine("Moving forward");
@@ -211,8 +217,9 @@ public class Auto_Test extends LinearOpMode {
                 telemetry.addData("Actual LF", LeftFront.getCurrentPosition());
                 //  telemetry.addData("Actual" , "%.2f", LeftFront.getCurrentPosition() , LeftRear.getCurrentPosition(), RightRear.getCurrentPosition(), RightFront.getCurrentPosition());
                 telemetry.update();
+                sleep(200);
             }
-
+            sleep(200);
         }
 
         // Stop all the motors
