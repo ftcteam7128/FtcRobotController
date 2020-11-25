@@ -11,20 +11,20 @@ public class ColorSensor_Test {
     ColorSensor col_sensor;
 
     public void init(){
-        col_sensor = HardwareMap.colorSensor.get("color_sensor");
+        //col_sensor = HardwareMap.colorSensor.get("color_sensor");
     }
 
-    @Override
+    //@Override
     public void runOpMode(){
-        waitForStart();
+        //waitForStart();
 
         int red = col_sensor.red();
         int green = col_sensor.green();
         int blue = col_sensor.blue();
 
-        telemetry.addData("Red: ", red);
-        telemetry.addData("Green: ", green);
-        telemetry.addData("Blue: ", blue);
-        telemetry.update();
+        //telemetry.addData("Red: ", red);
+        //telemetry.addData("Green: ", green);
+        //telemetry.addData("Blue: ", blue);
+        //telemetry.update();
     }
 }
