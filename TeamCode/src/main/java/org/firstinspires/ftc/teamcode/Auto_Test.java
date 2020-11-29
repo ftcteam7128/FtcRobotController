@@ -117,9 +117,12 @@ public class Auto_Test extends LinearOpMode {
 
         // --------------------------- REAL AUTO TESTS ---------------------------
         moveInches(24, 0.25f);
-        // turn 180 degrees
+        // Advaith - turn 180 degrees -- write new method or look at old one
         // scan the # of rings (using OpenCV)
-        intake();
+        intake(); // ishani
+        // Advaith - turn 180 degrees
+        // Krish - move to the white line (1.5 ft?)
+        shoot(); // Muskaan
 
         // --------------------------- TESTS ---------------------------
         // Moving LeftFront 1000 ticks
@@ -144,9 +147,14 @@ public class Auto_Test extends LinearOpMode {
     }
 
     public void intake() {
-        // intakeMotor
+        // intakeMotor will turn 360 degrees twice
+        // leftServo and rightServo will turn 110 degrees
+
     }
 
+    public void shoot() {
+
+    }
     public void moveForSeconds(int secs, double speed){
         LeftFront.setPower(speed);
         LeftRear.setPower(speed);
