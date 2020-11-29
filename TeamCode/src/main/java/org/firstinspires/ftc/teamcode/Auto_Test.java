@@ -69,7 +69,10 @@ public class Auto_Test extends LinearOpMode {
     private DcMotor RightFront = null;
     private DcMotor RightRear = null;
 
-    private Servo shooter = null;
+    private DcMotor intakeMotor = null;
+    private Servo leftServo = null;
+    private Servo rightServo = null;
+    private DcMotor shooterMotor = null;
 
     double ENCODER_TICKS_PER_INCH = ((28 * 40)/2.6)/(Math.PI*4);
 
@@ -84,8 +87,13 @@ public class Auto_Test extends LinearOpMode {
         LeftRear  = hardwareMap.get(DcMotor.class, "LeftRear");
         RightFront  = hardwareMap.get(DcMotor.class, "RightFront");
         RightRear  = hardwareMap.get(DcMotor.class, "RightRear");
-        shooter = hardwareMap.get(Servo.class, "shooterServo");
-        
+
+        // ** Change deviceNames later **
+        intakeMotor = hardwareMap.get(DcMotor.class, "intakeMotor");
+        leftServo = hardwareMap.get(Servo.class, "leftServo");
+        rightServo = hardwareMap.get(Servo.class, "rightServo");
+        shooterMotor = hardwareMap.get(DcMotor.class, "shooterMotor");
+
         // ---------------------------------- NEW ----------------------------------
         LeftFront.setDirection(DcMotor.Direction.REVERSE);
         LeftRear.setDirection(DcMotor.Direction.REVERSE);
@@ -107,6 +115,12 @@ public class Auto_Test extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
+        // --------------------------- REAL AUTO TESTS ---------------------------
+        moveInches(24, 0.25f);
+        // turn 180 degrees
+        // scan the # of rings (using OpenCV)
+        intake();
+
         // --------------------------- TESTS ---------------------------
         // Moving LeftFront 1000 ticks
         // ops.moveTicks(1000, LeftFront, 0.25f);
@@ -126,7 +140,11 @@ public class Auto_Test extends LinearOpMode {
 
         // Moving 10 inches backward
         // ops.moveInches(-10, 0.25f);
-        moveInches(10, -0.25f);
+        // moveInches(10, -0.25f);
+    }
+
+    public void intake() {
+        // intakeMotor
     }
 
     public void moveForSeconds(int secs, double speed){
