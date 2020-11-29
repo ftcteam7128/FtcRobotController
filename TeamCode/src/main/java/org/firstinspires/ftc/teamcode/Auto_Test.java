@@ -38,6 +38,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -68,6 +69,8 @@ public class Auto_Test extends LinearOpMode {
     private DcMotor RightFront = null;
     private DcMotor RightRear = null;
 
+    private Servo shooter = null;
+
     double ENCODER_TICKS_PER_INCH = ((28 * 40)/2.6)/(Math.PI*4);
 
     @Override
@@ -81,7 +84,8 @@ public class Auto_Test extends LinearOpMode {
         LeftRear  = hardwareMap.get(DcMotor.class, "LeftRear");
         RightFront  = hardwareMap.get(DcMotor.class, "RightFront");
         RightRear  = hardwareMap.get(DcMotor.class, "RightRear");
-
+        shooter = hardwareMap.get(Servo.class, "shooterServo");
+        
         // ---------------------------------- NEW ----------------------------------
         LeftFront.setDirection(DcMotor.Direction.REVERSE);
         LeftRear.setDirection(DcMotor.Direction.REVERSE);
