@@ -121,7 +121,10 @@ public class Auto_Test extends LinearOpMode {
         // scan the # of rings (using OpenCV)
         intake(); // ishani
         // Advaith - turn 180 degrees
+
+
         // Krish - move to the white line (1.5 ft?)
+        moveInches(18,0.25f);
         shoot(); // Muskaan
 
         // --------------------------- TESTS ---------------------------
