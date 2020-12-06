@@ -20,7 +20,7 @@ import org.openftc.easyopencv.OpenCvInternalCamera;
 /*
 STRATEGY:
   1. Input the camera frame image as a matrix
-  2. Set yellow parts of the image as white and the bg as black
+  2. Set orange parts of the image as white and the bg as black
   3. Extract the region of interest into a submatrix through hard-coded values
         a) in our case, its the dimensions for the max number of rings, 4
   4. Figure out the % of white in the submatrix
@@ -46,9 +46,18 @@ public class RingScanner_Tester extends LinearOpMode {
         cam.setPipeline(scanner);
 
         // Streaming
-        cam.openCameraDeviceAsync(
-                () -> cam.startStreaming(240, 320, OpenCvCameraRotation.UPRIGHT)
-        );
+        // cam.openCameraDeviceAsync(
+        //         () -> cam.startStreaming(240, 320, OpenCvCameraRotation.UPRIGHT)
+        // );
+
+        cam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+            @Override
+            public void onOpened()
+            {
+                cam.startStreaming(320,240,OpenCvCameraRotation.UPRIGHT);
+            }
+
+        });
 
         waitForStart();
 
@@ -71,13 +80,12 @@ public class RingScanner_Tester extends LinearOpMode {
         // ----------------- x and y are opposite vertices of a triangle -----------------
         // -----------------        need to determine by testing         -----------------
 
-        Point four_topLeft = new Point(0, 0);
-        Point four_bottomRight = new Point(0, 0);
-
+        Point four_botLeft = new Point(0, 0);
+        Point four_topRight = new Point(25, 35);
 
         // ----------------- Defining rectangle for our region of interest -----------------
 
-        Rect FOUR_RINGS_ROI = new Rect(four_topLeft, four_bottomRight);
+        Rect FOUR_RINGS_ROI = new Rect(four_botLeft, four_topRight);
 
 
         public RingScanner(Telemetry t) {
@@ -91,12 +99,15 @@ public class RingScanner_Tester extends LinearOpMode {
             // HSV: Hue - color, Saturation - intensity, value - brightness
             Imgproc.cvtColor(input, mat, Imgproc.COLOR_RGB2HSV); // range: 0-180
 
-            // Creating an HSV range to detect yellow (ring color)
-            // Will only be considered yellow if all three values are within this range
-            Scalar lowHSV = new Scalar(23, 50, 70);
-            Scalar highHSV = new Scalar(32, 255, 255);
-            
-            // Thresholding - showing the part of the image that is yellow
+            // Creating an HSV range to detect orange (ring color)
+            // Will only be considered orange if all three values are within this range
+            // chart: http://www.workwithcolor.com/orange-brown-color-hue-range-01.htm
+            // Scalar lowHSV = new Scalar(24, 100, 50);
+            // Scalar highHSV = new Scalar(39, 100, 85);
+            Scalar lowHSV = new Scalar(0, 0, 0);
+            Scalar highHSV = new Scalar(0, 0, 100);
+
+            // Thresholding - showing the part of the image that is orange
             // Parameters: source matrix, lower bound, higher bound, destination matrix
             // After this, regions with HSV will be white, bg black
             Core.inRange(mat, lowHSV, highHSV, mat);
@@ -112,16 +123,19 @@ public class RingScanner_Tester extends LinearOpMode {
             // Releasing the sub-matrix
             rings.release();
 
-            telemetry.addData("% color match", "rings_percent(%.2f)");
+            telemetry.addData("percent color match", rings_percent);
             telemetry.update();
 
             // Figuring out how many rings there are
             if (rings_percent <= 0.05) {
                 telemetry.addData("# of rings", "ZERO");
+                sleep(1000);
             } else if (rings_percent <= 0.25) {
                 telemetry.addData("# of rings", "ONE");
+                sleep(1000);
             } else {
                 telemetry.addData("# of rings", "FOUR");
+                sleep(1000);
             }
             telemetry.update();
 
@@ -132,7 +146,7 @@ public class RingScanner_Tester extends LinearOpMode {
             Scalar border = new Scalar(0, 255, 0);
 
             // Drawing the ROI rectangle onto the matrix
-            Imgproc.rectangle(mat, four_topLeft, four_bottomRight, border);
+            Imgproc.rectangle(mat, four_botLeft, four_topRight, border);
 
             return mat;
         }
