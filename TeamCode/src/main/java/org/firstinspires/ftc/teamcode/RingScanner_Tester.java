@@ -16,6 +16,7 @@ import org.opencv.core.Rect;
 import org.opencv.core.Point;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvInternalCamera;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 
 /*
 STRATEGY:
@@ -40,23 +41,17 @@ public class RingScanner_Tester extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        cam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
+        // cam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
+        cam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
 
         RingScanner scanner = new RingScanner(telemetry);
         cam.setPipeline(scanner);
 
-        // Streaming
-        // cam.openCameraDeviceAsync(
-        //         () -> cam.startStreaming(240, 320, OpenCvCameraRotation.UPRIGHT)
-        // );
-
         cam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
-            public void onOpened()
-            {
+            public void onOpened(){
                 cam.startStreaming(320,240,OpenCvCameraRotation.UPRIGHT);
             }
-
         });
 
         waitForStart();
@@ -78,14 +73,18 @@ public class RingScanner_Tester extends LinearOpMode {
         Mat mat = new Mat();
 
         // ----------------- x and y are opposite vertices of a triangle -----------------
-        // -----------------        need to determine by testing         -----------------
+        // -------     need to determine by testing camera 10 in away from the rings  -------
 
-        Point four_botLeft = new Point(0, 0);
-        Point four_topRight = new Point(25, 35);
+        int width = 320;
+        int height = 240;
+
+        // (0, 0) is top left
+        Point four_topLeft = new Point(0.25*width, 0.05*height);
+        Point four_botRight = new Point(width - (0.1*width), height - (0.1*height));
 
         // ----------------- Defining rectangle for our region of interest -----------------
 
-        Rect FOUR_RINGS_ROI = new Rect(four_botLeft, four_topRight);
+        Rect FOUR_RINGS_ROI = new Rect(four_topLeft, four_botRight);
 
 
         public RingScanner(Telemetry t) {
@@ -104,8 +103,8 @@ public class RingScanner_Tester extends LinearOpMode {
             // chart: http://www.workwithcolor.com/orange-brown-color-hue-range-01.htm
             // Scalar lowHSV = new Scalar(24, 100, 50);
             // Scalar highHSV = new Scalar(39, 100, 85);
-            Scalar lowHSV = new Scalar(0, 0, 0);
-            Scalar highHSV = new Scalar(0, 0, 100);
+            Scalar lowHSV = new Scalar(26, 99, 99);
+            Scalar highHSV = new Scalar(50, 99, 99);
 
             // Thresholding - showing the part of the image that is orange
             // Parameters: source matrix, lower bound, higher bound, destination matrix
@@ -146,7 +145,7 @@ public class RingScanner_Tester extends LinearOpMode {
             Scalar border = new Scalar(0, 255, 0);
 
             // Drawing the ROI rectangle onto the matrix
-            Imgproc.rectangle(mat, four_botLeft, four_topRight, border);
+            Imgproc.rectangle(mat, four_topLeft, four_botRight, border);
 
             return mat;
         }
