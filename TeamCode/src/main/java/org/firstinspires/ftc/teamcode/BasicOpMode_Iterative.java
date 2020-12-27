@@ -33,6 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -73,25 +74,44 @@ public class BasicOpMode_Iterative extends OpMode
         RightFront = hardwareMap.get(DcMotor.class, "RightFront");
         RightRear = hardwareMap.get(DcMotor.class, "RightRear");
 
-        // Tell the driver that initialization is complete.
-        telemetry.addData("Status", "Initialized");
-    }
+        LeftFront.setDirection(DcMotor.Direction.REVERSE);
+        LeftRear.setDirection(DcMotor.Direction.FORWARD);
+        RightFront.setDirection(DcMotor.Direction.REVERSE);
+        RightFront.setDirection(DcMotor.Direction.FORWARD);
+        // left back, right front changed
 
+        LeftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        LeftRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        RightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        RightRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        LeftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        LeftRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        RightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        RightRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        // waitForStart();
+
+    }
+/*
+    @Override
+    public void waitForStart() {
+    }
+*/
     /*
      * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
-     */
+
     @Override
     public void init_loop() {
     }
-
+    */
     /*
      * Code to run ONCE when the driver hits PLAY
-     */
+
     @Override
     public void start() {
         runtime.reset();
     }
-
+*/
     /*
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
      */
@@ -104,12 +124,12 @@ public class BasicOpMode_Iterative extends OpMode
         double scalar = Math.hypot(yPos,xPos);
         double maxPower = 1;
 
-        double flPower = scalar*(xPos + yPos + rot);
-        double frPower = scalar*(xPos - yPos - rot);
-        double rlPower = scalar*(xPos - yPos + rot);
+        double lfPower = scalar*(xPos + yPos + rot);
+        double rfPower = scalar*(xPos - yPos - rot);
+        double lrPower = scalar*(xPos + yPos + rot); // - +
         double rrPower = scalar*(xPos + yPos - rot);
 
-        double[] mPowers = {flPower, frPower, rlPower, rrPower};
+        double[] mPowers = {lfPower, rfPower, lrPower, rrPower};
         maxPower = largestMotor(mPowers);
 
         if (maxPower > 1) {
@@ -118,14 +138,14 @@ public class BasicOpMode_Iterative extends OpMode
             scalar = 1;
         }
 
-        flPower = scalar*(xPos + yPos + rot);
-        frPower = scalar*(xPos - yPos - rot);
-        rlPower = scalar*(xPos - yPos + rot);
+        lfPower = scalar*(xPos + yPos + rot);
+        rfPower = scalar*(xPos - yPos - rot);
+        lrPower = scalar*(xPos + yPos + rot); // - +
         rrPower = scalar*(xPos + yPos - rot);
 
-        LeftFront.setPower(flPower);
-        LeftRear.setPower(frPower);
-        RightFront.setPower(rlPower);
+        LeftFront.setPower(lfPower);
+        LeftRear.setPower(rfPower);
+        RightFront.setPower(lrPower);
         RightRear.setPower(rrPower);
     }
 
@@ -142,8 +162,9 @@ public class BasicOpMode_Iterative extends OpMode
     /*
      * Code to run ONCE after the driver hits STOP
      */
+    /*
     @Override
     public void stop() {
     }
-
+*/
 }

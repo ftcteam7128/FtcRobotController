@@ -40,6 +40,8 @@ public class RingScanner_Tester extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
+        waitForStart();
+
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         // cam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
         cam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
@@ -54,7 +56,7 @@ public class RingScanner_Tester extends LinearOpMode {
             }
         });
 
-        waitForStart();
+        // waitForStart();
 
         while(opModeIsActive()) {
             telemetry.addLine("Scanning");
@@ -96,15 +98,15 @@ public class RingScanner_Tester extends LinearOpMode {
 
             // Converting matrix from RGB --> HSV
             // HSV: Hue - color, Saturation - intensity, value - brightness
-            Imgproc.cvtColor(input, mat, Imgproc.COLOR_RGB2HSV); // range: 0-180
+            Imgproc.cvtColor(input, mat, Imgproc.COLOR_RGB2HSV_FULL); // range: 0-360
 
             // Creating an HSV range to detect orange (ring color)
             // Will only be considered orange if all three values are within this range
             // chart: http://www.workwithcolor.com/orange-brown-color-hue-range-01.htm
             // Scalar lowHSV = new Scalar(24, 100, 50);
             // Scalar highHSV = new Scalar(39, 100, 85);
-            Scalar lowHSV = new Scalar(26, 99, 99);
-            Scalar highHSV = new Scalar(50, 99, 99);
+            Scalar lowHSV = new Scalar(26, 200, 150); // lowered brightness from 150
+            Scalar highHSV = new Scalar(50, 255, 255);
 
             // Thresholding - showing the part of the image that is orange
             // Parameters: source matrix, lower bound, higher bound, destination matrix
@@ -123,13 +125,21 @@ public class RingScanner_Tester extends LinearOpMode {
             rings.release();
 
             telemetry.addData("percent color match", rings_percent);
-            telemetry.update();
+            // telemetry.update();
+
+            sleep(500); // added bc telem was getting overrided
+
+            // 0 rings - 0                     0.001 --> 0 w/o box
+            // 1 ring = 0.06 --> 1             0.06  --> 1 w/o box
+            // 2 rings - 0.046 --> 4           0.029  --> 1 w/o box
+            // 3 rings - 0.11 --> 4            0.03  --> 4 w/o box
+            // 4 rings - 0.25 or 0.27 --> 4    0.058 w/o box
 
             // Figuring out how many rings there are
-            if (rings_percent <= 0.05) {
+            if (rings_percent <= 0.03) { // 005
                 telemetry.addData("# of rings", "ZERO");
                 sleep(1000);
-            } else if (rings_percent <= 0.25) {
+            } else if (rings_percent <= 0.1) { //0.1
                 telemetry.addData("# of rings", "ONE");
                 sleep(1000);
             } else {
