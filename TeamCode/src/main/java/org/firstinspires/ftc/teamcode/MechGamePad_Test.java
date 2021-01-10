@@ -12,9 +12,11 @@ public class MechGamePad_Test extends OpMode{
     DcMotor leftIntakeMotor;
     DcMotor rightIntakeMotor;
     Servo intakeServo;
+    DcMotor shootMotor;
 
     public void init(){
         wobbleServo = hardwareMap.get(Servo.class, "WobbleServo");
+        shootMotor = hardwareMap.get(DcMotor.class, "ShootMotor");
     }
 
     public void loop(){
@@ -54,7 +56,12 @@ public class MechGamePad_Test extends OpMode{
     }
 
     public void shoot() {
-        // Sam
+        shootMotor.setPower(0.5);
+        // sleep(5000);
+
+        shootMotor.setPower(0);
+        // sleep(1000);
+
     }
 
     // figure out how to add ring scanning
