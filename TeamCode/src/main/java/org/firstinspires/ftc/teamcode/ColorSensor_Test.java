@@ -32,21 +32,22 @@ public class ColorSensor_Test extends LinearOpMode{
         while (red < 240 && green < 240 && blue < 240){
             telemetry.addData("Status", "No white line detected");
             telemetry.update();
-
+            /*
             LeftFront.setPower(0.25f);
             RightRear.setPower(0.25f);
             RightFront.setPower(0.25f);
             LeftRear.setPower(0.25f);
+             */
         }
 
         telemetry.addData("Status", "Found white line");
         telemetry.update();
-
+        /*
         LeftFront.setPower(0);
         RightRear.setPower(0);
         RightFront.setPower(0);
         LeftRear.setPower(0);
-
+        */
         //telemetry.addData("Red: ", red);
         //telemetry.addData("Green: ", green);
         //telemetry.addData("Blue: ", blue);
