@@ -16,6 +16,9 @@ public class WobbleGoal_Mover {
     private DcMotor baseMotor = null;
     private Servo gateServo = null;
     private Telemetry telem = null;
+    double upPos = 0;
+    double leftPos = 0;
+    double rightPos = 0;
 
     @Override
     public void init(){
@@ -27,7 +30,7 @@ public class WobbleGoal_Mover {
 
         // manually store/set the desired position (facing up)
         // we only need to check the first time (we can save the actual position then)
-        double upPos = baseMotor.getCurrentPosition();
+        upPos = baseMotor.getCurrentPosition();
         telem.addData("Desired pos: ", upPos);
 
         baseMotor.setTargetPosition((int) upPos);
@@ -38,9 +41,13 @@ public class WobbleGoal_Mover {
     public void loop(){
 
         boolean changeGateState = gamepad2.a;
+        boolean moveLeft = gamepad2.x;
+        boolean moveRight = gamepad2.b;
        // double stickPos = gamepad2.right_stick_y;
 
         if (changeGateState) { wobbleGoalPincher(); }
+        if (moveLeft) { moveLeft(); }
+        if (moveRight) { moveRight(); }
 
     }
 
@@ -49,5 +56,26 @@ public class WobbleGoal_Mover {
         if(gateServo.getPosition() < 0.5 ) gateServo.setPosition(1.0);
         else gateServo.setPosition(0);
     }
+    public void moveLeft (){
+        if (baseMotor.getCurrentPosition()==upPos){
+            baseMotor.setTargetPosition(leftPos);
+            baseMotor.setPower(0.25f);
+        }
+        else {
+            baseMotor.setTargetPosition(upPos);
+            baseMotor.setPower(0.25f);
+        }
+    }
+    public void moveRight (){
+        if (baseMotor.getCurrentPosition()==upPos){
+            baseMotor.setTargetPosition(rightPos);
+            baseMotor.setPower(0.25f);
+        }
+        else {
+            baseMotor.setTargetPosition(upPos);
+            baseMotor.setPower(0.25f);
+        }
+    }
+
 
 }
