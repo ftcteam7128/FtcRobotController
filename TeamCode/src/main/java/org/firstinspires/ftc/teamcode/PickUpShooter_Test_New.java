@@ -1,16 +1,16 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 // import com.qualcomm.robotcore.hardware.Servo.MIN_POSITION;
 // import com.qualcomm.robotcore.hardware.Servo.MAX_POSITION;
 
 @TeleOp(name="Basic: PickUpShooter_Test", group="Iterative Opmode")
-public class PickUpShooter_Test extends OpMode{
+public class PickUpShooter_Test_New extends LinearOpMode{
 
     DcMotor rightIntakeMotor;
     Servo intakeServo;
@@ -20,7 +20,7 @@ public class PickUpShooter_Test extends OpMode{
     double ENCODER_TICKS_PER_REVOLUTION = 288;
 
 
-    public void init(){
+    public void runOpMode(){
         rightIntakeMotor = hardwareMap.get(DcMotor.class, "intake");
         intakeServo = hardwareMap.get(Servo.class, "IntakeServo");
         shooterMotor = hardwareMap.get(DcMotor.class, "shooter");
@@ -38,7 +38,21 @@ public class PickUpShooter_Test extends OpMode{
         }
         rightIntakeMotor.setPower(0);
 
-        waitForStart();
+        while(opModeIsActive()){
+            boolean push = gamepad2.x;
+            boolean shoot = gamepad2.b;
+
+            if (push) {
+                // intakeServo.setPosition(Range.clip(0.5, 0, 1));
+                // intakeServo.setPosition(intakeServo.getPosition()+0.5);
+                telemetry.addLine("Pushing");
+                telemetry.update();
+                intakeServo.setPosition(0.5); // min: -1, max: 1
+            }
+            if (shoot) {
+                shooterMotor.setPower(0.25f);
+            }
+        }
     }
 /*
     @Override
