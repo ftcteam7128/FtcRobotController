@@ -1,13 +1,13 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.gamepad;
 
 @TeleOp
-public class WobbleGoal_Mover {
+public class WobbleGoal_Mover extends LinearOpMode {
 
     // Core hex motor to initialize facing up
     // Enocders to move up/down
@@ -21,7 +21,7 @@ public class WobbleGoal_Mover {
     double rightPos = 0;
 
     @Override
-    public void init(){
+    public void runOpMode(){
         baseMotor = hardwareMap.get(DcMotor.class, "BaseMotor");
         gateServo = hardwareMap.get(Servo.class, "GateServo");
 
@@ -36,26 +36,48 @@ public class WobbleGoal_Mover {
         baseMotor.setTargetPosition((int) upPos);
         baseMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         baseMotor.setPower(0.25f);
-    }
 
+        while(opModeIsActive()){
+            boolean changeGateState = gamepad2.y;
+            // boolean moveLeft = gamepad2.x;
+            // boolean moveRight = gamepad2.b;
+            double moveDirec = gamepad2.left_stick_x;
+            // double stickPos = gamepad2.right_stick_y;
+
+            if (changeGateState) { wobbleGoalPincher(); }
+            // if (moveLeft) { moveLeft(); }
+            // if (moveRight) { moveRight(); }
+
+            // baseMotor.setTargetPosition((int)(baseMotor.getCurrentPosition() + moveDirec));
+            baseMotor.setPower(moveDirec);
+        }
+    }
+    /*
     public void loop(){
 
-        boolean changeGateState = gamepad2.a;
-        boolean moveLeft = gamepad2.x;
-        boolean moveRight = gamepad2.b;
+        boolean changeGateState = gamepad2.y;
+        // boolean moveLeft = gamepad2.x;
+        // boolean moveRight = gamepad2.b;
+        double moveDirec = gamepad2.left_stick_x;
        // double stickPos = gamepad2.right_stick_y;
 
         if (changeGateState) { wobbleGoalPincher(); }
-        if (moveLeft) { moveLeft(); }
-        if (moveRight) { moveRight(); }
+        // if (moveLeft) { moveLeft(); }
+        // if (moveRight) { moveRight(); }
+
+        baseMotor.setTargetPosition(baseMotor.getCurrentPosition() + moveDirec);
+        baseMotor.setPower(0.25f);
 
     }
-
+*/
     public void wobbleGoalPincher(){
 
         if(gateServo.getPosition() < 0.5 ) gateServo.setPosition(1.0);
         else gateServo.setPosition(0);
     }
+
+
+
     public void moveLeft (){
         if (baseMotor.getCurrentPosition()==upPos){
             baseMotor.setTargetPosition(leftPos);
