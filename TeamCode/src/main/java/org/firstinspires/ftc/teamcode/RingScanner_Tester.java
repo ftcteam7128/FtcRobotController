@@ -81,8 +81,11 @@ public class RingScanner_Tester extends LinearOpMode {
         int height = 240;
 
         // (0, 0) is top left
-        Point four_topLeft = new Point(0.25*width, 0.05*height);
-        Point four_botRight = new Point(width - (0.1*width), height - (0.1*height));
+        // Point four_topLeft = new Point(0.25*width, 0.05*height);
+       //  Point four_botRight = new Point(width - (0.1*width), height - (0.1*height));
+
+        Point four_topLeft = new Point(0.25*width, 0.3*height);
+        Point four_botRight = new Point(width - (0.2*width), height - (0.1*height));
 
         // ----------------- Defining rectangle for our region of interest -----------------
 
