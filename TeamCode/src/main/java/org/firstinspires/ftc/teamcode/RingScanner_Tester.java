@@ -42,7 +42,8 @@ public class RingScanner_Tester extends LinearOpMode {
 
         waitForStart();
 
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        int cameraMonitorViewId;
+        cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         // cam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
         cam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
 
@@ -84,8 +85,11 @@ public class RingScanner_Tester extends LinearOpMode {
         // Point four_topLeft = new Point(0.25*width, 0.05*height);
        //  Point four_botRight = new Point(width - (0.1*width), height - (0.1*height));
 
-        Point four_topLeft = new Point(0.25*width, 0.3*height);
-        Point four_botRight = new Point(width - (0.2*width), height - (0.1*height));
+        // Point four_topLeft = new Point(0.3*width, 0.4*height);
+        // Point four_botRight = new Point(width - (0.2*width), height - (0.1*height));
+
+        Point four_topLeft = new Point(0.3*width, 0);
+        Point four_botRight = new Point(width - (0.2*width), height);
 
         // ----------------- Defining rectangle for our region of interest -----------------
 
@@ -139,16 +143,40 @@ public class RingScanner_Tester extends LinearOpMode {
             // 4 rings - 0.25 or 0.27 --> 4    0.058 w/o box
 
             // Figuring out how many rings there are
-            if (rings_percent <= 0.03) { // 005
+            /*
+            if (rings_percent <= 0.0) { // 005
                 telemetry.addData("# of rings", "ZERO");
                 sleep(1000);
-            } else if (rings_percent <= 0.1) { //0.1
+            }
+            */
+
+            /*
+            if(rings_percent <= 0.001){
+                telemetry.addData("# of rings", "ZERO");
+                sleep(1000);
+            }
+            else if (rings_percent <= 0.1) { //0.1
                 telemetry.addData("# of rings", "ONE");
                 sleep(1000);
-            } else {
+            }
+            else if(rings_percent >= 0.14){
                 telemetry.addData("# of rings", "FOUR");
                 sleep(1000);
             }
+            */
+            if(rings_percent >= 0.14){
+                telemetry.addData("# of rings", "FOUR");
+                sleep(1000);
+            }
+            else if (rings_percent >= 0.008) { //0.1
+                telemetry.addData("# of rings", "ONE");
+                sleep(1000);
+            }
+            else{
+                telemetry.addData("# of rings", "ZERO");
+                sleep(1000);
+            }
+
             telemetry.update();
 
             // Converting the gray-scale image back to RGB
